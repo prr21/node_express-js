@@ -24,6 +24,7 @@ class Cours {
         courses.push(this.toJSON());
 
         return new Promise((resolve, reject) => {
+
             fs.writeFile(
                 path.join(__dirname, '..', 'data', 'courses.json'),
                 JSON.stringify(courses),
@@ -35,8 +36,8 @@ class Cours {
                     } else resolve();
                 }
             )
-        })
 
+        });
     }
 
     static getAllData(){
@@ -45,7 +46,6 @@ class Cours {
             fs.readFile(
                 path.join(__dirname, '..', 'data', 'courses.json'),
                 'utf-8',
-
                 (err, data) => {
                     if (err) {
                         reject(err)
@@ -61,6 +61,29 @@ class Cours {
         const courses = await Cours.getAllData();
 
         return courses.find(c => c.id === id);
+    }
+
+    static async update(cours){
+        const courses = await Cours.getAllData();
+
+        const idx = courses.findIndex(c => c.id === cours.id);
+        courses[idx] = cours;
+        
+        return new Promise((resolve, reject) => {
+
+            fs.writeFile(
+                path.join(__dirname, '..', 'data', 'courses.json'),
+                JSON.stringify(courses),
+    
+                (err) => {
+                    if (err) {
+                        reject(err);
+    
+                    } else resolve();
+                }
+            )
+
+        });
     }
 }
 
