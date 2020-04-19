@@ -2,6 +2,8 @@ const path = require('path');
 const fs = require('fs');
 const uuid = require('uuid/v4');
 
+const dataFile = path.join(__dirname, '..', 'data', 'courses.json');
+
 class Cours {
     constructor(title, price, img){
         this.title = title,
@@ -19,16 +21,13 @@ class Cours {
         }
     }
 
+    // Сохранить новый курс в data файл
     async save(){
         const courses = await Cours.getAllData();
         courses.push(this.toJSON());
 
         return new Promise((resolve, reject) => {
-
-            fs.writeFile(
-                path.join(__dirname, '..', 'data', 'courses.json'),
-                JSON.stringify(courses),
-    
+            fs.writeFile( dataFile, JSON.stringify(courses),
                 (err) => {
                     if (err) {
                         reject(err);
@@ -36,16 +35,14 @@ class Cours {
                     } else resolve();
                 }
             )
-
         });
     }
 
+    // Получить все курсы из data файла
     static getAllData(){
         return new Promise((resolve, reject) => {
 
-            fs.readFile(
-                path.join(__dirname, '..', 'data', 'courses.json'),
-                'utf-8',
+            fs.readFile( dataFile, 'utf-8',
                 (err, data) => {
                     if (err) {
                         reject(err)
@@ -57,12 +54,14 @@ class Cours {
         })
     }
 
+    // Получить курс по id
     static async getById(id){
         const courses = await Cours.getAllData();
 
         return courses.find(c => c.id === id);
     }
 
+    // Сохранить редактирование курса
     static async update(cours){
         const courses = await Cours.getAllData();
 
@@ -70,11 +69,7 @@ class Cours {
         courses[idx] = cours;
         
         return new Promise((resolve, reject) => {
-
-            fs.writeFile(
-                path.join(__dirname, '..', 'data', 'courses.json'),
-                JSON.stringify(courses),
-    
+            fs.writeFile( data, JSON.stringify(courses),
                 (err) => {
                     if (err) {
                         reject(err);
@@ -82,7 +77,6 @@ class Cours {
                     } else resolve();
                 }
             )
-
         });
     }
 }
