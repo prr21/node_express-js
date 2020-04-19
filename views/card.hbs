@@ -1,0 +1,14 @@
+<h1>Корзина покупок</h1>
+
+<div class="row">
+    {{#each card.courses}}
+    <ul>
+        <li>Курс {{title}} по цене <i><span>{{price}}</span></i></li>
+    </ul>
+    {{/each}}
+</div>
+
+<h4>Общая стоимость:</h4>
+<b>
+    <p class="price">{{card.total}}</p>
+</b>
