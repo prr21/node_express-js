@@ -8,15 +8,18 @@ class Card {
     static async addToCard(id){
         const card = await Card.getAllCards();
         
-        const haveInCard = card.courses.find(c => c.id === id);
-        const cours = await Cours.getById(id);
-
-        card.total += +cours.price;
+        const idx = card.courses.findIndex(c => c.id === id);
+        let candidate = card.courses[idx];
 
         // Если курса нет в корзине, то добавляем его
-        if (!haveInCard){
-            card.courses.push(cours);
-        }
+        if (!candidate){
+            candidate = await Cours.getById(id);
+            candidate.count = 1;
+            card.courses.push(candidate);
+            
+        } else candidate.count++
+
+        card.total += +candidate.price;
 
         return new Promise((resolve, reject) => {
             fs.writeFile( dataFile, JSON.stringify(card),
@@ -29,6 +32,30 @@ class Card {
             )
         })
 
+    }
+
+    static async remove(id){
+        const card = await Card.getAllCards();
+        const cours = card.courses.find(c => c.id === id);
+
+        if (cours.count == 1) {
+            // Убрать элемент с корзины
+            card.courses = card.courses.filter(c => c.id !== id);
+            console.log(card)
+
+        } else cours.count--
+
+        card.total -= +cours.price;
+
+        return new Promise((resolve, reject) => {
+            fs.writeFile(dataFile, JSON.stringify(card),
+                (err)=> {
+                    if (err){
+                        reject(err);
+
+                    } else resolve(card)
+                })
+        })
     }
 
     static getAllCards(){
@@ -45,6 +72,7 @@ class Card {
 
         })
     }
+
 }
 
 module.exports = Card;
