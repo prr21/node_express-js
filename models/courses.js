@@ -69,7 +69,7 @@ class Cours {
         courses[idx] = cours;
         
         return new Promise((resolve, reject) => {
-            fs.writeFile( data, JSON.stringify(courses),
+            fs.writeFile( dataFile, JSON.stringify(courses),
                 (err) => {
                     if (err) {
                         reject(err);
